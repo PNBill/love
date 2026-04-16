@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Pháo hoa</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+var fireworks = [];
+
+function Firework(x, y) {
+  this.x = x;
+  this.y = y;
+  this.radius = 2;
+  this.color = "hsl(" + Math.random()*360 + ",100%,50%)";
+  this.speedX = (Math.random() - 0.5) * 8;
+  this.speedY = (Math.random() - 0.5) * 8;
+  this.alpha = 1;
+}
+
+Firework.prototype.update = function() {
+  this.x += this.speedX;
+  this.y += this.speedY;
+  this.alpha -= 0.01;
+};
+
+Firework.prototype.draw = function() {
+  ctx.globalAlpha = this.alpha;
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+  ctx.fillStyle = this.color;
+  ctx.fill();
+};
+
+canvas.addEventListener("click", function(e) {
+  for (var i = 0; i < 100; i++) {
+    fireworks.push(new Firework(e.clientX, e.clientY));
+  }
+});
+
+function animate() {
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  for (var i = 0; i < fireworks.length; i++) {
+    fireworks[i].update();
+    fireworks[i].draw();
+
+    if (fireworks[i].alpha <= 0) {
+      fireworks.splice(i, 1);
+      i--;
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
