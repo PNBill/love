@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Pháo hoa</title>
+<title>Fireworks</title>
 
 <style>
 body {
@@ -10,7 +10,6 @@ body {
   background: black;
   overflow: hidden;
 }
-
 canvas {
   display: block;
 }
@@ -54,22 +53,29 @@ Firework.prototype.draw = function() {
   ctx.fill();
 };
 
-canvas.addEventListener("click", function(e) {
-  for (var i = 0; i < 100; i++) {
-    fireworks.push(new Firework(e.clientX, e.clientY));
+function explode(x,y){
+  for (var i = 0; i < 80; i++) {
+    fireworks.push(new Firework(x,y));
   }
-});
+}
 
 function animate() {
-  ctx.fillStyle = "rgba(0,0,0,0.2)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  for (var i = 0; i < fireworks.length; i++) {
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  if(Math.random()<0.05){
+    explode(Math.random()*canvas.width,
+            Math.random()*canvas.height/2);
+  }
+
+  for (var i=0;i<fireworks.length;i++){
+
     fireworks[i].update();
     fireworks[i].draw();
 
-    if (fireworks[i].alpha <= 0) {
-      fireworks.splice(i, 1);
+    if(fireworks[i].alpha<=0){
+      fireworks.splice(i,1);
       i--;
     }
   }
